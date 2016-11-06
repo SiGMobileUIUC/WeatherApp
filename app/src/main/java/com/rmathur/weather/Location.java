@@ -8,10 +8,18 @@ import com.orm.SugarRecord;
 
 public class Location extends SugarRecord {
 
-    public int zipcode;
+    private String zipcode;
 
-    public Location(int zipcode) {
+    public Location() {
+        this.zipcode = "";
+    }
+
+    public Location(String zipcode) {
         // set this object's zipcode
         this.zipcode = zipcode;
+    }
+
+    public String getZipCode() {
+        return this.zipcode;
     }
 }

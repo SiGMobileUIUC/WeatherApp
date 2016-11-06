@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +17,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
+
+import com.orm.SugarContext;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Context context;
+    private Context mContext;
+
+    private RecyclerView mRecyclerView;
+    private ZipListAdapter adapter;
+
+    private List<Location> locationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +38,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        context = this;
+        mContext = this;
+
+        SugarContext.init(mContext);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.location_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        updateZipCodes();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,11 +82,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        SugarContext.terminate();
+    }
+
+    public void updateZipCodes() {
+        locationList = Location.listAll(Location.class);
+        adapter = new ZipListAdapter(MainActivity.this, locationList);
+        mRecyclerView.setAdapter(adapter);
+    }
+
     public void addLocation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(getString(R.string.add_location));
 
-        View viewInflated = LayoutInflater.from(context).inflate(R.layout.dialog_add_loc, (ViewGroup) findViewById(android.R.id.content), false);
+        View viewInflated = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_loc, (ViewGroup) findViewById(android.R.id.content), false);
 
         // Set up the input
         final EditText input = (EditText) viewInflated.findViewById(R.id.input);
@@ -81,9 +110,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                int zipcode = Integer.parseInt(input.getText().toString());
+                String zipcode = input.getText().toString();
                 Location newLocation = new Location(zipcode);
                 newLocation.save();
+                updateZipCodes();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
