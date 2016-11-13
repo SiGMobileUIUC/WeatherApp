@@ -45,7 +45,8 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
         // get zip code
         Intent intent = getIntent();
-        zipcode = intent.getStringExtra(getString(R.string.zip_key));
+        Location loc = (Location) intent.getSerializableExtra(getString(R.string.zip_key));
+        zipcode = loc.getZipCode();
 
         // set up networking queue
         queue = Volley.newRequestQueue(this);

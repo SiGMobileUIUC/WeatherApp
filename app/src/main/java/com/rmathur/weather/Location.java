@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by rohanmathur on 10/19/16.
  */
 
-public class Location extends SugarRecord {
+public class Location extends SugarRecord implements Serializable {
 
     private String zipcode;
 

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Location clickedLoc = locationList.get(position);
                 Intent intent = new Intent(mContext, WeatherDetailActivity.class);
-                intent.putExtra(getString(R.string.zip_key), clickedLoc.getZipCode());
+                intent.putExtra(getString(R.string.zip_key), clickedLoc);
                 startActivity(intent);
             }
         });
