@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
 
     <string name="add_location">Add Location</string>
+
+    <string name="zip_key">ZIPCODE</string>
 </resources>

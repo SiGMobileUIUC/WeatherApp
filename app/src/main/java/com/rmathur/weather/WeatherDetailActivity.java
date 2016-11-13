@@ -1,5 +1,6 @@
 package com.rmathur.weather;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +10,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -31,8 +31,8 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
     // API
     private static final String API_OWM_KEY = "bccb424ce1ae4677532682647bda387d";
-    private static final String API_OWM_WEATHER = "http://api.openweathermap.org/data/2.5/weather?units=imperial&zip=%1$d,us&APPID=%2$s";
-    private static final int ZIPCODE = 61820;
+    private static final String API_OWM_WEATHER = "http://api.openweathermap.org/data/2.5/weather?units=imperial&zip=%1$s,us&APPID=%2$s";
+    private String zipcode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,10 @@ public class WeatherDetailActivity extends AppCompatActivity {
         currTemp = (TextView) findViewById(R.id.temperature);
         currConditions = (TextView) findViewById(R.id.conditions);
 
+        // get zip code
+        Intent intent = getIntent();
+        zipcode = intent.getStringExtra(getString(R.string.zip_key));
+
         // set up networking queue
         queue = Volley.newRequestQueue(this);
 
@@ -51,7 +55,7 @@ public class WeatherDetailActivity extends AppCompatActivity {
     }
 
     private void updateWeather() {
-        String url = String.format(API_OWM_WEATHER, ZIPCODE, API_OWM_KEY);
+        String url = String.format(API_OWM_WEATHER, zipcode, API_OWM_KEY);
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

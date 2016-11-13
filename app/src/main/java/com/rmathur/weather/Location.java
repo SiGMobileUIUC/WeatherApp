@@ -2,6 +2,8 @@ package com.rmathur.weather;
 
 import com.orm.SugarRecord;
 
+import java.io.Serializable;
+
 /**
  * Created by rohanmathur on 10/19/16.
  */

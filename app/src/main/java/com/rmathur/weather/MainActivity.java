@@ -5,17 +5,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -26,9 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private Context mContext;
-
-    private RecyclerView mRecyclerView;
-    private ZipListAdapter adapter;
+    private ListView lvZipCodes;
 
     private List<Location> locationList;
 
@@ -42,8 +38,16 @@ public class MainActivity extends AppCompatActivity {
 
         SugarContext.init(mContext);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.location_list);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        lvZipCodes = (ListView) findViewById(R.id.zip_codes);
+        lvZipCodes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Location clickedLoc = locationList.get(position);
+                Intent intent = new Intent(mContext, WeatherDetailActivity.class);
+                intent.putExtra(getString(R.string.zip_key), clickedLoc.getZipCode());
+                startActivity(intent);
+            }
+        });
         updateZipCodes();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -89,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateZipCodes() {
         locationList = Location.listAll(Location.class);
-        adapter = new ZipListAdapter(MainActivity.this, locationList);
-        mRecyclerView.setAdapter(adapter);
+        lvZipCodes.setAdapter(new ZipcodeAdapter(this, locationList));
     }
 
     public void addLocation() {
